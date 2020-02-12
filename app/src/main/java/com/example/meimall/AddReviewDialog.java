@@ -86,6 +86,7 @@ public class AddReviewDialog extends DialogFragment {
         return sdf.format(date);
     }
 
+
     private void initViews(View view){
         Log.d(TAG, "initViews: started");
         edtName = view.findViewById(R.id.edtName);
