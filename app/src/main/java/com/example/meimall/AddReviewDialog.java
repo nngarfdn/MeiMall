@@ -14,6 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.meimall.Models.GroceryItem;
+import com.example.meimall.Models.Review;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class AddReviewDialog extends DialogFragment {
     private static final String TAG = "AddReviewDialog";
@@ -22,6 +27,12 @@ public class AddReviewDialog extends DialogFragment {
     private TextView txtItemName, txtWarning ;
     private Button btnAdd ;
     private int itemId = 0 ;
+
+    public interface AddReview{
+        void addReviewResult (Review review);
+    }
+
+    private AddReview addReview ;
 
     @NonNull
     @Override
@@ -37,6 +48,7 @@ public class AddReviewDialog extends DialogFragment {
         try {
             GroceryItem item = bundle.getParcelable("item");
             txtItemName.setText(item.getName());
+            this.itemId = item.getId();
         }catch (NullPointerException e){
             e.printStackTrace();
         }
@@ -53,7 +65,25 @@ public class AddReviewDialog extends DialogFragment {
 
     private void addReview(){
         Log.d(TAG, "addReview: started");
+        String name = edtName.getText().toString();
+        String reviewText = edtReview.getText().toString();
+        String date = getCurrentDate();
 
+        Review review = new Review(itemId, name, reviewText, date);
+
+        try {
+            addReview = (AddReview) getActivity();
+            addReview.addReviewResult(review);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
+
+    private String getCurrentDate() {
+        Log.d(TAG, "getCurrentDate: started");
+        Date date = (Date) Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        return sdf.format(date);
     }
 
     private void initViews(View view){
